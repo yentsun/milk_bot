@@ -8,10 +8,12 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'milkprice'
+BOT_NAME = 'milkbot'
 
-SPIDER_MODULES = ['milkprice.spiders']
-NEWSPIDER_MODULE = 'milkprice.spiders'
+SPIDER_MODULES = ['milkbot.spiders']
+NEWSPIDER_MODULE = 'milkbot.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'milkprice (+http://www.yourdomain.com)'
+USER_AGENT = 'Milkbot Spider 0.1 (http://korinets.name/milkbot)'
+
+ITEM_PIPELINES = ['milkbot.pipelines.PersistencePipeline']
