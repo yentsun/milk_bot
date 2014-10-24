@@ -14,6 +14,6 @@ SPIDER_MODULES = ['milkbot.spiders']
 NEWSPIDER_MODULE = 'milkbot.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Milkbot Spider 0.1 (http://korinets.name/milkbot)'
+USER_AGENT = 'Milkbot Spider 0.1 (http://korinets.name/milk-price-report.html)'
 
 ITEM_PIPELINES = ['milkbot.pipelines.PersistencePipeline']

@@ -1,41 +1,53 @@
 # -*- coding: utf-8 -*-
 
 import transaction
+import logging
 from ZODB.FileStorage import FileStorage
 from scrapy.exceptions import DropItem
 from milkpricereport.models import (PriceReport, Product, ProductCategory,
-                                    Reporter, Merchant, StorageManager)
+                                    Reporter, Merchant, StorageManager,
+                                    CategoryLookupError, PackageLookupError)
+
+logging.basicConfig(filename='dropped.log', level=logging.DEBUG)
 
 
 class PersistencePipeline(object):
     """Pipeline to persist items in ZODB"""
 
     def __init__(self):
-        self.storage = StorageManager(FileStorage('storage.fs'))
+        self.keeper = StorageManager(FileStorage('storage.fs'))
+        self.errors = list()
+        self.success = list()
 
     def process_item(self, item, spider):
-        category = ProductCategory.fetch('milk', self.storage)
-        cat_keyword = category.get_data('keyword')
-        if cat_keyword not in item['title'].lower():
-            raise DropItem(u'Dropping no-keyword title '
-                           u'({0})'.format(item['title']))
-        price_value = float(item['price_value'])
-        product = Product.fetch(item['title'], self.storage)
-        product.category = category
-        category.add_products(product)
-        reporter = Reporter.fetch(spider.name, self.storage)
-        merchant = Merchant.fetch(item['merchant'], self.storage)
-        merchant.location = 'Europe/Moscow'
-        new_report = PriceReport(price_value=price_value,
-                                 product=product,
-                                 reporter=reporter,
-                                 url=item['url'],
-                                 merchant=merchant)
-        self.storage.register(new_report)
-        print(u'Added new report {0} to {1} category'.format(new_report,
-                                                             category))
+
+        merchant = Merchant.fetch(item['merchant'], self.keeper)
+        reporter = Reporter.acquire(spider.name, self.keeper)
+        try:
+            report, stats = PriceReport.assemble(
+                price_value=float(item['price_value']),
+                product_title=item['title'],
+                url=item['url'],
+                merchant=merchant,
+                reporter=reporter,
+                storage_manager=self.keeper
+            )
+            self.success.append(report)
+        except CategoryLookupError, e:
+            logging.debug(e.message.encode('utf-8'))
+            self.errors.append(e)
+            raise DropItem(e.message)
+        except PackageLookupError, e:
+            logging.debug(e.message.encode('utf-8'))
+            self.errors.append(e)
+            raise DropItem(e.message.encode('utf-8'))
+
         return item
 
     def close_spider(self, spider):
-        transaction.commit()
-        self.storage.close()
+
+        if len(self.success) > 0:
+            transaction.commit()
+        else:
+            transaction.abort()
+        self.keeper.close()
