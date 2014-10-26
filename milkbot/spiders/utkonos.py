@@ -5,7 +5,7 @@ from milkbot.items import MerchantItem
 class UtkonosSpider(BaseSpider):
 
     name = "utkonos_spider"
-    download_delay = 0.5
+    download_delay = 5
     allowed_domains = ["www.utkonos.ru"]
     start_urls = [
         #milk
@@ -30,16 +30,22 @@ class UtkonosSpider(BaseSpider):
         'http://www.utkonos.ru/cat/catalogue/108/page/2',
         #sunflower oil
         'http://www.utkonos.ru/cat/catalogue/43?property[]=61:430',
-        'http://www.utkonos.ru/cat/catalogue/43/page/2?property[]=61:430'
+        'http://www.utkonos.ru/cat/catalogue/43/page/2?property[]=61:430',
         #bread
         'http://www.utkonos.ru/cat/catalogue/111',
         'http://www.utkonos.ru/cat/catalogue/111/page/2',
         'http://www.utkonos.ru/cat/catalogue/111/page/3',
-        'http://www.utkonos.ru/cat/catalogue/111/page/4'
+        'http://www.utkonos.ru/cat/catalogue/111/page/4',
+        #potato
+        'http://www.utkonos.ru/cat/catalogue/28?catalogue_id=28&property'
+        '%5B%5D=132%3A232043&property%5B%5D=20%3A237',
     ]
 
     def parse(self, response):
-        for sel in response.xpath('//div[@class="goods_view"]'):
+        for sel in response.xpath("//div[@class='goods_container "
+                                  "goods_view_box']/div[contains(@class, "
+                                  "'goods_view')]"):
+            print(sel)
             item = MerchantItem()
             item['price_value'] = sel.xpath('form/input[@name="price"]/'
                                             '@value').extract()[0]
