@@ -10,7 +10,7 @@ from fabric.colors import *
 from prettytable import PrettyTable
 from milkpricereport.models import (ProductCategory, StorageManager,
                                     PriceReport, PackageLookupError, Reporter,
-                                    Product, Merchant)
+                                    Product, Merchant, CategoryLookupError)
 from ZODB.FileStorage import FileStorage
 
 MULTIPLIER = 1
@@ -257,6 +257,12 @@ def fix_categories():
     keeper = StorageManager(FileStorage('storage.fs'))
     products = Product.fetch_all(keeper)
     for product in products:
-        product.category.add_product(product)
-        print(green(u'"{}" added to "{}"'.format(product, product.category)))
-    transaction.commit()
+        try:
+            product.get_category_key()
+        except CategoryLookupError:
+            if product.category:
+                category = product.category
+                category.remove_product(product)
+                transaction.commit()
+                print(yellow(u'"{}" removed from "{}"'.format(product,
+                                                              category)))

@@ -45,7 +45,6 @@ class UtkonosSpider(BaseSpider):
         for sel in response.xpath("//div[@class='goods_container "
                                   "goods_view_box']/div[contains(@class, "
                                   "'goods_view')]"):
-            print(sel)
             item = MerchantItem()
             item['price_value'] = sel.xpath('form/input[@name="price"]/'
                                             '@value').extract()[0]
