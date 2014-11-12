@@ -39,6 +39,12 @@ class UtkonosSpider(BaseSpider):
         #potato
         'http://www.utkonos.ru/cat/catalogue/28?catalogue_id=28&property'
         '%5B%5D=132%3A232043&property%5B%5D=20%3A237',
+        #sugar
+        'http://www.utkonos.ru/cat/catalogue/44?catalogue_id=44&property%5B%5D'
+        '=63%3A437&property%5B%5D=65%3A436',
+        #salt
+        'http://www.utkonos.ru/cat/catalogue/44?property[]=63:434',
+        'http://www.utkonos.ru/cat/catalogue/44/page/2?property%5B%5D=63:434'
     ]
 
     def parse(self, response):
@@ -58,3 +64,9 @@ class UtkonosSpider(BaseSpider):
                 '/text()'
             ).extract()[0].split(' ')[0].replace(',', '.')
             yield item
+
+
+class UtkonosTestSpider(UtkonosSpider):
+
+    name = "utkonos_test_spider"
+    start_urls = ['http://localhost:8080/page.html']

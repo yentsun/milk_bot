@@ -1,5 +1,6 @@
 .idea/*
 *.log
+*.pyc
 data.json
 page.html
 page2.html

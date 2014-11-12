@@ -37,32 +37,40 @@ def make_image(days):
     from matplotlib import rc
     storage = StorageManager(FileStorage('storage.fs'))
     milk = ProductCategory.fetch('milk', storage)
-    sour_cream = ProductCategory.fetch('sour cream', storage)
+    # sour_cream = ProductCategory.fetch('sour cream', storage)
     egg = ProductCategory.fetch('chicken egg', storage)
     oil = ProductCategory.fetch('sunflower oil', storage)
     bread = ProductCategory.fetch('bread', storage)
     potato = ProductCategory.fetch('potato', storage)
+    sugar = ProductCategory.fetch('sugar', storage)
+    salt = ProductCategory.fetch('salt', storage)
 
     dates = get_datetimes(days)
     milk_prices = [milk.get_price(date) for date in dates]
-    sc_prices = [sour_cream.get_price(date) for date in dates]
+    # sc_prices = [sour_cream.get_price(date) for date in dates]
     egg_prices = [egg.get_price(date) for date in dates]
     oil_prices = [oil.get_price(date) for date in dates]
     bread_prices = [bread.get_price(date) for date in dates]
     potato_prices = [potato.get_price(date) for date in dates]
+    sugar_prices = [sugar.get_price(date) for date in dates]
+    salt_prices = [salt.get_price(date) for date in dates]
 
     fig = plt.figure(figsize=(8, 7))
     rc('font', family='Ubuntu')
-    plt.plot_date(dates, sc_prices, '-', marker='.', label=u'сметана, 400г')
+    # plt.plot_date(dates, sc_prices, '-', marker='.', label=u'сметана, 400г')
     plt.plot_date(dates, oil_prices, '-', marker='.', label=u'масло под., 1л')
     plt.plot_date(dates, egg_prices, '-', marker='.', label=u'яйцо, 1 дес.')
     plt.plot_date(dates, milk_prices, '-', marker='.', label=u'молоко, 1л')
     plt.plot_date(dates, bread_prices, '-', marker='.', label=u'хлеб, 500г')
+    plt.plot_date(dates, sugar_prices, '-', marker='.', label=u'сахар, 1кг')
     plt.plot_date(dates, potato_prices, '-', marker='.',
                   label=u'картофель, 1кг')
+    plt.plot_date(dates, salt_prices, '-', marker='.', label=u'соль, 1кг')
+
     plt.ylabel(u'Средняя цена, руб.')
-    plt.yticks([sc_prices[0], milk_prices[0], egg_prices[0],
-                bread_prices[0], oil_prices[0], potato_prices[0]])
+    plt.yticks([milk_prices[0], egg_prices[0],
+                bread_prices[0], oil_prices[0], potato_prices[0],
+                sugar_prices[0], salt_prices[0]])
     plt.xticks(dates[0::7])
     fig.autofmt_xdate()
     ax = fig.add_subplot(111)
@@ -78,6 +86,7 @@ def make_image(days):
 def deploy_graph(days=7):
     """Make and deploy graph to remote host"""
     execute(make_image, days)
+    local('cp milkpriceresults.png ~/Projects/yentsun.com/content/images')
     local('scp milkpriceresults.png ubuntu@alpha:~/www/korinets.name/images')
 
 
