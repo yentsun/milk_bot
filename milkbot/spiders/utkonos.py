@@ -44,7 +44,26 @@ class UtkonosSpider(BaseSpider):
         '=63%3A437&property%5B%5D=65%3A436',
         #salt
         'http://www.utkonos.ru/cat/catalogue/44?property[]=63:434',
-        'http://www.utkonos.ru/cat/catalogue/44/page/2?property%5B%5D=63:434'
+        'http://www.utkonos.ru/cat/catalogue/44/page/2?property%5B%5D=63:434',
+        #buckwheat
+        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D=56%3A410',
+        'http://www.utkonos.ru/cat/catalogue/41/page/2?property%5B%5D=56:410',
+        #rice
+        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D=56%3A409',
+        'http://www.utkonos.ru/cat/catalogue/41/page/2?property%5B%5D=56:409',
+        'http://www.utkonos.ru/cat/catalogue/41/page/3?property%5B%5D=56:409',
+        #pasta
+        'http://www.utkonos.ru/cat/catalogue/42',
+        'http://www.utkonos.ru/cat/catalogue/42/page/2',
+        'http://www.utkonos.ru/cat/catalogue/42/page/3',
+        'http://www.utkonos.ru/cat/catalogue/42/page/4',
+        'http://www.utkonos.ru/cat/catalogue/42/page/5',
+        'http://www.utkonos.ru/cat/catalogue/42/page/6',
+        'http://www.utkonos.ru/cat/catalogue/42/page/7',
+        'http://www.utkonos.ru/cat/catalogue/42/page/8',
+        'http://www.utkonos.ru/cat/catalogue/42/page/9',
+        'http://www.utkonos.ru/cat/catalogue/42/page/10',
+        'http://www.utkonos.ru/cat/catalogue/42/page/11'
     ]
 
     def parse(self, response):

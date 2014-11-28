@@ -7,10 +7,11 @@ import logging
 from collections import OrderedDict
 from fabric.api import *
 from fabric.colors import *
-from prettytable import PrettyTable
+
 from milkpricereport.models import (ProductCategory, StorageManager,
                                     PriceReport, PackageLookupError, Reporter,
                                     Product, Merchant, CategoryLookupError)
+from price_watch.models import ProductCategory as PWCategory
 from ZODB.FileStorage import FileStorage
 
 MULTIPLIER = 1
@@ -30,7 +31,7 @@ def get_datetimes(days):
 
 
 @task
-def make_image(days):
+def make_graph(days):
     """Generate graph with matplotlib"""
     import matplotlib.pyplot as plt
     from matplotlib import dates as mdates
@@ -44,6 +45,7 @@ def make_image(days):
     potato = ProductCategory.fetch('potato', storage)
     sugar = ProductCategory.fetch('sugar', storage)
     salt = ProductCategory.fetch('salt', storage)
+    buck = ProductCategory.fetch('buckwheat', storage)
 
     dates = get_datetimes(days)
     milk_prices = [milk.get_price(date) for date in dates]
@@ -54,6 +56,7 @@ def make_image(days):
     potato_prices = [potato.get_price(date) for date in dates]
     sugar_prices = [sugar.get_price(date) for date in dates]
     salt_prices = [salt.get_price(date) for date in dates]
+    buck_prices = [buck.get_price(date) for date in dates]
 
     fig = plt.figure(figsize=(8, 7))
     rc('font', family='Ubuntu')
@@ -62,6 +65,7 @@ def make_image(days):
     plt.plot_date(dates, egg_prices, '-', marker='.', label=u'яйцо, 1 дес.')
     plt.plot_date(dates, milk_prices, '-', marker='.', label=u'молоко, 1л')
     plt.plot_date(dates, bread_prices, '-', marker='.', label=u'хлеб, 500г')
+    plt.plot_date(dates, buck_prices, '-', marker='.', label=u'гречка, 1кг')
     plt.plot_date(dates, sugar_prices, '-', marker='.', label=u'сахар, 1кг')
     plt.plot_date(dates, potato_prices, '-', marker='.',
                   label=u'картофель, 1кг')
@@ -69,8 +73,8 @@ def make_image(days):
 
     plt.ylabel(u'Средняя цена, руб.')
     plt.yticks([milk_prices[0], egg_prices[0],
-                bread_prices[0], oil_prices[0], potato_prices[0],
-                sugar_prices[0], salt_prices[0]])
+                oil_prices[0], potato_prices[0],
+                sugar_prices[0], salt_prices[0], buck_prices[0]])
     plt.xticks(dates[0::7])
     fig.autofmt_xdate()
     ax = fig.add_subplot(111)
@@ -85,7 +89,7 @@ def make_image(days):
 @task
 def deploy_graph(days=7):
     """Make and deploy graph to remote host"""
-    execute(make_image, days)
+    execute(make_graph, days)
     local('cp milkpriceresults.png ~/Projects/yentsun.com/content/images')
     local('scp milkpriceresults.png ubuntu@alpha:~/www/korinets.name/images')
 
@@ -194,6 +198,7 @@ def add(merchant_str, title, price_value, url, date_string=None):
 @task
 def display_category(category_key):
     """Display category data in table"""
+    from prettytable import PrettyTable
 
     table = PrettyTable(['product', 'N', 'O',
                          'pack.'])
@@ -222,12 +227,14 @@ def display_category(category_key):
 @task
 def stats(category_key, days=2):
     """Show daily statistics for a category"""
+    from prettytable import PrettyTable
     table = PrettyTable(['date/time', 'report #', 'product #', 'median', 'min',
                          'max'])
     table.align = 'l'
     dates = get_datetimes(days)
     keeper = StorageManager(FileStorage('storage.fs'))
     category = ProductCategory.fetch(category_key, keeper)
+    print(table)
     for date in dates:
         table.add_row([str(date),
                        len(category.get_reports(date)),
@@ -235,23 +242,51 @@ def stats(category_key, days=2):
                        category.get_price(date),
                        category.get_price(cheap=True),
                        max(category.get_prices(date))])
-    print(table)
 
 
 @task
 def cleanup():
-    """Delete products with no reports"""
+    """Perform cleanup and fixing routines on stored instances"""
     keeper = StorageManager(FileStorage('storage.fs'))
-    products = Product.fetch_all(keeper)
-    for product in products:
+    products = Product.fetch_all(keeper, objects_only=False)
+
+    print('Products check...')
+    for key, product in products.iteritems():
+        # key check
+        if key != product.get_key():
+            print(yellow(u'Fixing {}...'.format(key)))
+            keeper.register(product)
+            keeper.delete_key(product.__class__.__name__, key)
+            del product.category.products[key]
+            product.category.add_product(product)
+            for merchant in product.merchants.values():
+                del merchant.products[key]
+                merchant.add_product(product)
+
+        # reports check
         if len(product.reports) == 0:
             print(yellow(u'Deleting "{}"...'.format(product)))
-            keeper.delete(product)
+            product.delete_from(keeper)
+
+        # correct category check
+        try:
+            product.get_category_key()
+        except CategoryLookupError:
+            if product.category:
+                category = product.category
+                print(yellow(u'Deleting "{}" from "{}"'.format(product,
+                                                               category)))
+                category.remove_product(product)
+                product.delete_from(keeper)
+
+    print('Merchants check...')
     for merchant in Merchant.fetch_all(keeper):
         for key, product in merchant.products.items():
             if len(product.reports) == 0:
                 print(yellow(u'Deleting "{}"...'.format(product)))
                 del merchant.products[key]
+
+    print('Categories check...')
     for category in ProductCategory.fetch_all(keeper):
         for key, product in category.products.items():
             if len(product.reports) == 0:
@@ -275,3 +310,30 @@ def fix_categories():
                 transaction.commit()
                 print(yellow(u'"{}" removed from "{}"'.format(product,
                                                               category)))
+
+
+@task
+def post_reports():
+    """Post reports to Price Watch"""
+    import requests
+    keeper = StorageManager(FileStorage('storage.fs'))
+    reports = PriceReport.fetch_all(keeper)
+    for report in reports:
+        print(u'Posting report {}...'.format(report))
+        req = requests.post('http://localhost:6543/reports', data={
+            "url": report.url,
+            "price_value": report.price_value,
+            "date_time": report.date_time.strftime('%Y-%m-%d %H:%M:%S'),
+            "product_title": report.product.title,
+            "reporter": report.reporter.name,
+            "merchant": report.merchant.title
+        })
+        if req.status_code != 200:
+            if req.status_code == 400:
+                print(yellow(u'Bad report: {}'.format(report)))
+                logging.debug(u'Bad report: {}'.format(report))
+            else:
+                print(red(req.text))
+                req.raise_for_status()
+        else:
+            print(green(req.json()['new_report']))
