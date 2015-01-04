@@ -21,7 +21,7 @@ class PersistencePipeline(object):
 
     def close_spider(self, spider):
 
-        response = requests.post('http://localhost:6543/reports',
+        response = requests.post('http://food-price.net/reports',
                                  data=self.payload)
         if response.status_code == 200:
             print(response.json())

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from scrapy.spider import BaseSpider
 from milkbot.items import MerchantItem
 
@@ -73,7 +74,7 @@ class UtkonosSpider(BaseSpider):
             item = MerchantItem()
             item['price_value'] = sel.xpath('form/input[@name="price"]/'
                                             '@value').extract()[0]
-            item['merchant'] = 'utkonos'
+            item['merchant'] = u'Утконос'
             item['title'] = sel.xpath('a[@class="goods_caption"]/'
                                       '@title').extract()[0]
             item['url'] = sel.xpath('a[@class="goods_caption"]/'
