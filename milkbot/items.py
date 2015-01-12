@@ -9,4 +9,3 @@ class MerchantItem(scrapy.Item):
     merchant = scrapy.Field()
     title = scrapy.Field()
     url = scrapy.Field()
-    weight = scrapy.Field()

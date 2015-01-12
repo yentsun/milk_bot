@@ -79,10 +79,6 @@ class UtkonosSpider(BaseSpider):
                                       '@title').extract()[0]
             item['url'] = sel.xpath('a[@class="goods_caption"]/'
                                     '@href').extract()[0]
-            item['weight'] = sel.xpath(
-                'div/div[@class="goods_weight"]'
-                '/text()'
-            ).extract()[0].split(' ')[0].replace(',', '.')
             yield item
 
 

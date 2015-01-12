@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
+from scrapy.exceptions import DropItem
 
 
 class PersistencePipeline(object):
@@ -11,8 +12,10 @@ class PersistencePipeline(object):
 
     def process_item(self, item, spider):
 
-        self.payload.append(('url', item['url']))
+        if item['price_value'] is None:
+            raise DropItem
         self.payload.append(('price_value', item['price_value']))
+        self.payload.append(('url', item['url']))
         self.payload.append(('product_title', item['title']))
         self.payload.append(('merchant_title', item['merchant']))
         self.payload.append(('reporter_name', spider.name))
@@ -25,6 +28,6 @@ class PersistencePipeline(object):
                                  data=self.payload)
         if response.status_code == 200:
             print(response.json())
-        if response.status_code == 500:
+        else:
             print(response.text)
             raise Exception('Server error!')
