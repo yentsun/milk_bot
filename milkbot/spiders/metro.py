@@ -24,7 +24,7 @@ class MetroSpider(BaseSpider):
         'baton-lavash?&limit=200',
         # potato
         # sugar+salt
-        'http://msk.metro-cc.ru/category/produkty/bakaleya/sahar-sol?&limit=200'
+        # 'http://msk.metro-cc.ru/category/produkty/bakaleya/sahar-sol?&limit=200'
         # buckwheat+rice
         'http://msk.metro-cc.ru/category/produkty/bakaleya/krupy?&limit=200',
         # pasta
