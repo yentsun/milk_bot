@@ -9,7 +9,8 @@ class UtkonosSpider(BaseSpider):
     download_delay = 5
     allowed_domains = ["www.utkonos.ru"]
     start_urls = [
-        #milk
+
+        # milk
         'http://www.utkonos.ru/cat/catalogue/11/page/1?property[]=4:4'
         '&property[]=5:5',
         'http://www.utkonos.ru/cat/catalogue/11/page/2?property[]=4:4'
@@ -22,38 +23,73 @@ class UtkonosSpider(BaseSpider):
         '&property[]=5:5',
         'http://www.utkonos.ru/cat/catalogue/11/page/6?property[]=4:4'
         '&property[]=5:5',
-        #sour cream
+
+        # sour cream
         'http://www.utkonos.ru/cat/catalogue/12?property[]=8:72',
         'http://www.utkonos.ru/cat/catalogue/12/page/2?property[]=8:72',
         'http://www.utkonos.ru/cat/catalogue/12/page/3?property[]=8:72',
-        #egg
+
+        # cheese
+        'http://www.utkonos.ru/cat/16',
+        'http://www.utkonos.ru/cat/catalogue/16/page/2',
+        'http://www.utkonos.ru/cat/catalogue/16/page/3',
+        'http://www.utkonos.ru/cat/catalogue/16/page/4',
+        'http://www.utkonos.ru/cat/catalogue/16/page/5',
+        'http://www.utkonos.ru/cat/catalogue/16/page/6',
+        'http://www.utkonos.ru/cat/catalogue/16/page/7',
+        'http://www.utkonos.ru/cat/catalogue/16/page/8',
+
+        # egg
         'http://www.utkonos.ru/cat/catalogue/108/page/1',
         'http://www.utkonos.ru/cat/catalogue/108/page/2',
-        #sunflower oil
+
+        # sunflower oil
         'http://www.utkonos.ru/cat/catalogue/43?property[]=61:430',
         'http://www.utkonos.ru/cat/catalogue/43/page/2?property[]=61:430',
-        #bread
+
+        # bread
         'http://www.utkonos.ru/cat/catalogue/111',
         'http://www.utkonos.ru/cat/catalogue/111/page/2',
         'http://www.utkonos.ru/cat/catalogue/111/page/3',
         'http://www.utkonos.ru/cat/catalogue/111/page/4',
-        #potato
-        'http://www.utkonos.ru/cat/catalogue/28?catalogue_id=28&property'
-        '%5B%5D=132%3A232043&property%5B%5D=20%3A237',
-        #sugar
+
+        # fruit
+        'http://www.utkonos.ru/cat/29',
+        'http://www.utkonos.ru/cat/catalogue/29/page/2'
+
+        # vegetables
+        'http://www.utkonos.ru/cat/catalogue/28',
+        'http://www.utkonos.ru/cat/catalogue/28/page/2',
+        'http://www.utkonos.ru/cat/catalogue/28/page/3',
+        'http://www.utkonos.ru/cat/catalogue/28/page/4',
+        'http://www.utkonos.ru/cat/catalogue/28/page/5',
+
+        # sugar
         'http://www.utkonos.ru/cat/catalogue/44?catalogue_id=44&property%5B%5D'
         '=63%3A437&property%5B%5D=65%3A436',
-        #salt
+
+        # salt
         'http://www.utkonos.ru/cat/catalogue/44?property[]=63:434',
         'http://www.utkonos.ru/cat/catalogue/44/page/2?property%5B%5D=63:434',
-        #buckwheat
-        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D=56%3A410',
+
+        # flour
+        'http://www.utkonos.ru/cat/45',
+        'http://www.utkonos.ru/cat/catalogue/45/page/2',
+        'http://www.utkonos.ru/cat/catalogue/45/page/3',
+        'http://www.utkonos.ru/cat/catalogue/45/page/4',
+
+        # buckwheat
+        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D'
+        '=56%3A410',
         'http://www.utkonos.ru/cat/catalogue/41/page/2?property%5B%5D=56:410',
-        #rice
-        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D=56%3A409',
+
+        # rice
+        'http://www.utkonos.ru/cat/catalogue/41?catalogue_id=41&property%5B%5D'
+        '=56%3A409',
         'http://www.utkonos.ru/cat/catalogue/41/page/2?property%5B%5D=56:409',
         'http://www.utkonos.ru/cat/catalogue/41/page/3?property%5B%5D=56:409',
-        #pasta
+
+        # pasta
         'http://www.utkonos.ru/cat/catalogue/42',
         'http://www.utkonos.ru/cat/catalogue/42/page/2',
         'http://www.utkonos.ru/cat/catalogue/42/page/3',

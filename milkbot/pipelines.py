@@ -5,7 +5,7 @@ from scrapy.exceptions import DropItem
 
 
 class PersistencePipeline(object):
-    """Pipeline to persist items in ZODB"""
+    """Pipeline sending reports to a Price Watch app"""
 
     def __init__(self):
         self.payload = list()
@@ -24,8 +24,17 @@ class PersistencePipeline(object):
 
     def close_spider(self, spider):
 
-        response = requests.post('http://food-price.net/reports',
-                                 data=self.payload)
+        url = 'http://localhost:6543/reports'
+        auth = None
+        if hasattr(spider, 'target'):
+            target = getattr(spider, 'target')
+            if target == 'food-price.net':
+                from requests.auth import HTTPBasicAuth
+                url = 'http://food-price.net/reports'
+                with open('security/{}'.format(target), 'r') as f:
+                    user, password = f.readline().split(': ')
+                    auth = HTTPBasicAuth(user, password)
+        response = requests.post(url, data=self.payload, auth=auth)
         if response.status_code == 200:
             print(response.json())
         else:

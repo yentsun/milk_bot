@@ -9,24 +9,47 @@ class MetroSpider(BaseSpider):
     download_delay = 5
     allowed_domains = ['www.metro-cc.ru']
     start_urls = [
+
         # milk
         'http://msk.metro-cc.ru/category/produkty/molochnye/moloko?&limit=200',
+
         # sour cream
         'http://msk.metro-cc.ru/category/produkty/molochnye/smetana?'
         '&limit=200',
+
+        # cheese
+        'http://msk.metro-cc.ru/category/produkty/syrnye/tverdye-syry?price_'
+        'from=0&price_to=0&brands=&sorting=0&limit=200',
+
         # egg
         'http://msk.metro-cc.ru/category/produkty/syrnye/yajca-kurinye',
+
         # sunflower oil
         'http://msk.metro-cc.ru/category/produkty/bakaleya/rastitelnoe-maslo?'
         '&limit=200',
+
         # bread
         'http://msk.metro-cc.ru/category/produkty/hlebobulochnye-izdeliya/'
         'baton-lavash?&limit=200',
-        # potato
+
+        # vegetables
+        'http://msk.metro-cc.ru/category/produkty/ovoschi-griby/'
+        '101009001-svezhie?&limit=200',
+
+        # fruit
+        'http://msk.metro-cc.ru/category/produkty/frukty-yagody/'
+        '101010001-svezhye?&limit=200'
+
+        # flour
+        'http://msk.metro-cc.ru/category/produkty/bakaleya/101004004-vypechka?'
+        'price_from=0&price_to=0&brands=&attrs=&sorting=0&limit=400'
+
         # sugar+salt
         # 'http://msk.metro-cc.ru/category/produkty/bakaleya/sahar-sol?&limit=200'
+
         # buckwheat+rice
         'http://msk.metro-cc.ru/category/produkty/bakaleya/krupy?&limit=200',
+
         # pasta
         'http://msk.metro-cc.ru/category/produkty/bakaleya/makaronnye-izdeliya'
         '?&limit=200',
