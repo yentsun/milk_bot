@@ -10,6 +10,12 @@ class PriceWatchPipeline(object):
     def __init__(self):
         self.payload = list()
 
+    def batches(self, limit=100*5):
+        """ Yield successive limit-sized chunks from payload.
+        The limit should be multiple of 5 (as one item is 5 rows)"""
+        for i in xrange(0, len(self.payload), limit):
+            yield self.payload[i:i+limit]
+
     def process_item(self, item, spider):
 
         if item['price_value'] is None:
@@ -34,9 +40,8 @@ class PriceWatchPipeline(object):
                 with open('security/{}'.format(target), 'r') as f:
                     user, password = f.readline().split(': ')
                     auth = HTTPBasicAuth(user, password)
-        response = requests.post(url, data=self.payload, auth=auth)
-        if response.status_code == 200:
-            print(response.json())
-        else:
-            print(response.text)
-            raise Exception('Server error!')
+        for batch in self.batches():
+            response = requests.post(url, data=batch, auth=auth)
+            if response.status_code != 200:
+                print(response.text)
+                raise Exception('Server error!')
