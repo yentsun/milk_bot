@@ -4,7 +4,7 @@ import requests
 from scrapy.exceptions import DropItem
 
 
-class PersistencePipeline(object):
+class PriceWatchPipeline(object):
     """Pipeline sending reports to a Price Watch app"""
 
     def __init__(self):

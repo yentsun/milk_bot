@@ -16,4 +16,4 @@ NEWSPIDER_MODULE = 'milkbot.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Milk Bot 0.1 (http://food-price.net/pages/bot)'
 
-ITEM_PIPELINES = ['milkbot.pipelines.PersistencePipeline']
+ITEM_PIPELINES = ['milkbot.pipelines.PriceWatchPipeline']
