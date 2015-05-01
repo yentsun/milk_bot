@@ -73,7 +73,7 @@ class MetroSpider(BaseSpider):
             item['merchant'] = u'МЕТРО Кэш энд Керри'
 
             item['title'] = sel.xpath('.//div[@class="catalog-i_title"]'
-                                      '/span/text()').extract()[0].strip()
+                                      '/text()').extract()[0].strip()
             item['url'] = sel.xpath('.//a[@class="catalog-i_link"]'
                                     '/@href').extract()[0]
 
