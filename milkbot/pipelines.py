@@ -10,9 +10,9 @@ class PriceWatchPipeline(object):
     def __init__(self):
         self.payload = list()
 
-    def batches(self, limit=100*5):
+    def batches(self, limit=100*6):
         """ Yield successive limit-sized chunks from payload.
-        The limit should be multiple of 5 (as one item is 5 rows)"""
+        The limit should be multiple of 6 (as one item is 6 rows)"""
         for i in xrange(0, len(self.payload), limit):
             yield self.payload[i:i+limit]
 
@@ -23,6 +23,7 @@ class PriceWatchPipeline(object):
         self.payload.append(('price_value', item['price_value']))
         self.payload.append(('url', item['url']))
         self.payload.append(('product_title', item['title']))
+        self.payload.append(('product_sku', item['sku']))
         self.payload.append(('merchant_title', item['merchant']))
         self.payload.append(('reporter_name', spider.name))
 

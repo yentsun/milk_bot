@@ -74,6 +74,9 @@ class MetroSpider(BaseSpider):
 
             item['title'] = sel.xpath('.//div[@class="catalog-i_title"]'
                                       '/text()').extract()[0].strip()
+            item['sku'] = sel.xpath(
+                './/div[@class="bottom-line_item _article"]'
+                '/span/text()').extract()[0].strip()
             item['url'] = sel.xpath('.//a[@class="catalog-i_link"]'
                                     '/@href').extract()[0]
 
