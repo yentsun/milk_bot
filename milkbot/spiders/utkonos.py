@@ -113,6 +113,8 @@ class UtkonosSpider(BaseSpider):
             item['merchant'] = u'Утконос'
             item['title'] = sel.xpath('a[@class="goods_caption"]/'
                                       '@title').extract()[0]
+            item['sku'] = sel.xpath('.//input[@name="original_id"]/'
+                                    '@value').extract()[0]
             item['url'] = sel.xpath('a[@class="goods_caption"]/'
                                     '@href').extract()[0]
             yield item
