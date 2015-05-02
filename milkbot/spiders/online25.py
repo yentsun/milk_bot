@@ -58,6 +58,9 @@ class Online25Spider(BaseSpider):
             if item['price_value'] != '0.00':
                 item['title'] = item_cont.xpath(
                     './/div[@class="description_sell"]/p/a/@title').extract()[0]
+                item['sku'] = item_cont.xpath(
+                    './/div[@class="price"]/a/@href'
+                ).extract()[0].replace('/shop/cart/?add=', '')
                 item['url'] = item_cont.xpath(
                     './/div[@class="description_sell"]/p/a/@href').extract()[0]
 
