@@ -23,7 +23,7 @@ class PriceWatchPipeline(object):
         self.payload.append(('price_value', item['price_value']))
         self.payload.append(('url', item['url']))
         self.payload.append(('product_title', item['title']))
-        self.payload.append(('product_sku', item['sku']))
+        self.payload.append(('sku', item['sku']))
         self.payload.append(('merchant_title', item['merchant']))
         self.payload.append(('reporter_name', spider.name))
 
