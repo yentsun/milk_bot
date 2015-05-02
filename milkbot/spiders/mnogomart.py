@@ -59,6 +59,8 @@ class MnogomartSpider(BaseSpider):
                 './/span[@class="sum"]/text()').extract()[0]
             item['title'] = item_cont.xpath(
                 './/div[@class="name-wrap"]/text()').extract()[0]
+            item['sku'] = item_cont.xpath(
+                './/input[@name="id"]/@value').extract()[0]
             item['url'] = item_cont.xpath('.//a/@href').extract()[0]
 
             yield item
