@@ -89,7 +89,8 @@ class KorzinaSpider(BaseSpider):
     ]
 
     def parse(self, response):
-        for sel in response.xpath('//div[@class="prodlist col"]'):
+        for sel in response.xpath('//div[@class="productElementJson '
+                                  'prodlist col"]'):
             out_of_stock = len(sel.xpath('.//div[@class="'
                                          'stikerNone"]').extract())
             if not out_of_stock:
@@ -100,8 +101,7 @@ class KorzinaSpider(BaseSpider):
                                                 '/@data-price').extract()[0]
                 item['title'] = sel.xpath('.//div[@class="prodlist-title"]'
                                           '/a/text()').extract()[0].strip().encode('utf-8')
-                item['sku'] = sel.xpath('.//div[@class="prodlist-basket col"]'
-                                        '/@id').extract()[0]
+                item['sku'] = sel.xpath('@data-productid').extract()[0]
                 item['url'] = sel.xpath('.//a[@class="big_link '
                                         'popup_detail_click"]/@href').extract()[0]
 
