@@ -10,7 +10,7 @@ class PriceWatchPipeline(object):
     def __init__(self):
         self.payload = list()
 
-    def batches(self, limit=1000*6):
+    def batched_payload(self, limit=1000*6):
         """
         Yield limit-sized chunks from payload.
         The limit should be multiple of 6 (as one item is 6 rows)
@@ -43,7 +43,7 @@ class PriceWatchPipeline(object):
                 with open('security/{}'.format(target), 'r') as f:
                     user, password = f.readline().split(': ')
                     auth = HTTPBasicAuth(user, password)
-        for batch in self.batches():
+        for batch in self.batched_payload():
             response = requests.post(url, data=batch, auth=auth)
             if response.status_code != 200:
                 print(response.text)
