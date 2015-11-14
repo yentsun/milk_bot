@@ -104,11 +104,11 @@ class UtkonosSpider(BaseSpider):
     ]
 
     def parse(self, response):
+
         for sel in response.xpath("//div[@class='goods_view_block']"
-                                  "/div[contains(@class, "
-                                  "'goods_view')]"):
+                                  "/div[@class='goods_view']"):
             item = MerchantItem()
-            item['price_value'] = sel.xpath('form/input[@name="price"]/'
+            item['price_value'] = sel.xpath('.//input[@name="price"]/'
                                             '@value').extract()[0]
             item['merchant'] = u'Утконос'
             item['title'] = sel.xpath('a[@class="goods_caption"]/'
